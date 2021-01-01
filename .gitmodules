@@ -1,0 +1,3 @@
+[submodule "ile-cli"]
+	path = ile-cli
+	url = https://github.com/maxpoliak/ile-cli.git
