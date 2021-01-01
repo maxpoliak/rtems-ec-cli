@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <ile-cli.h>
 #include <ile-cli-api.h>
+#include <ile-cli-config.h>
 
 #include <rtems/shell.h>
 #include <rtems/termiostypes.h>
