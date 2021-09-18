@@ -3,13 +3,11 @@
  */
 
 #include <bsp.h>
-#include <bsp/lpc-gpio.h>
-#include <bsp/lpc-can.h>
 #include <rtems.h>
 #include <rtems/bspIo.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <ile-cli.h>
+#include <ile-cli-core.h>
 #include <ile-cli-api.h>
 #include <ile-cli-config.h>
 
@@ -118,7 +116,8 @@ void ile_cli_console_output(const char* text)
 /*
  * driver_op()
  */
-struct ile_cli_driver_op driver_op = {
+
+struct ile_cli_operations ops = {
   .char_get    = ile_cli_char_get,
   .char_output = ile_cli_console_output,
   .tree_build  = ile_cli_cmd_tree_build,
@@ -133,14 +132,13 @@ rtems_task Init(
   rtems_task_argument ignored
 )
 {
-  rtems_status_code status;
+  ile_cli_console_output("RTEMS & ile-cli. Please any key to continue...\n");
 
-  printf("RTEMS & ile-cli. Please any key to continue...\n");
-
+  cli_vterm_init(&ops);
   change_serial_settings(STDIN_FILENO, &term);
   ile_cli_char_get();
   restore_serial_settings(STDIN_FILENO, &term);
 
-  cli_vterm_char_proc(&driver_op);
+  cli_vterm_char_proc();
   exit(0);
 }
