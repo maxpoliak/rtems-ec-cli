@@ -8,7 +8,7 @@ docker build --tag ${CNT_IMAGE} --build-arg UID=${UID} ${THIS_DIR}
 exec docker run \
 	--interactive --tty --rm --init \
 	--volume ${ROOT_DIR}:/src \
-	--workdir /src/ci \
+	--workdir /src \
 	${VOLUME_NS_OPT:-} \
 	${CNT_IMAGE} \
 	"$@"
