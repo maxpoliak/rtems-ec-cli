@@ -40,11 +40,10 @@ $WORKSPACE/rtems/configure --target=i386-rtems5 \
 	USE_COM1_AS_CONSOLE=1 BSP_PRESS_KEY_FOR_RESET=0
 make all
 make install
-cd ..
 
+cd $WORKSPACE/..
 ./waf configure --rtems=$WORKSPACE/build \
 	--rtems-tools=$WORKSPACE/rtems-exe \
 	--rtems-bsps=i386/pc386
 ./waf
-
 cp ./build/i386-rtems5-pc386/ile-cli-test.exe ile-cli-test.exe
