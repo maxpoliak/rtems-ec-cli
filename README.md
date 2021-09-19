@@ -4,7 +4,16 @@ This is an example of using [ile-cli] for [RTEMS] RTOS based microcontrollers.
 
 ![][pic]
 
-Follow these steps to build cross-compilers, [RTEMS] OS and [ile-cli] project:
+Use the following scripts to build and test the project:
+```
+./0-rtems-qemu-build.sh
+./1-rtems-qemu-run-test-hello.sh
+./2-rtems-ile-cli-qemu-build.sh
+./3-rtems-qemu-run-ile-cli.sh
+```
+or use the following instruction.
+
+Build cross-compilers, [RTEMS] OS and [ile-cli] project:
 ```
 (user)$ export WORKSPACE=$(pwd)/rtems-project
 (user)$ mkdir -p $WORKSPACE; cd $WORKSPACE
