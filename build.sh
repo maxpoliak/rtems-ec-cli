@@ -2,6 +2,25 @@
 
 export WORKSPACE=$(pwd)/rtems-rtos
 
+git submodule update --init --checkout
+curl https://waf.io/waf-2.0.19 > waf
+chmod +x waf
+
+mkdir -p $WORKSPACE; cd $WORKSPACE
+git clone git://git.rtems.org/rtems-source-builder.git -b 5.1
+git clone git://git.rtems.org/rtems.git -b 5.1
+
+cd rtems-source-builder
+source-builder/sb-check
+cd rtems
+../source-builder/sb-set-builder \
+	--log=log-i386.txt \
+	--prefix=$WORKSPACE/rtems-exe \
+	5/rtems-i386.bset
+
+export PATH=$WORKSPACE/rtems-exe/bin:$PATH
+export PATH=$WORKSPACE/rtems/rtems-exe/i386-rtems5/bin:$PATH
+
 cd $WORKSPACE
 git clone git://git.rtems.org/rtems.git -b 5.1
 cd rtems
@@ -21,3 +40,11 @@ $WORKSPACE/rtems/configure --target=i386-rtems5 \
 	USE_COM1_AS_CONSOLE=1 BSP_PRESS_KEY_FOR_RESET=0
 make all
 make install
+cd ..
+
+./waf configure --rtems=$WORKSPACE/build \
+	--rtems-tools=$WORKSPACE/rtems-exe \
+	--rtems-bsps=i386/pc386
+./waf
+
+cp ./build/i386-rtems5-pc386/ile-cli-test.exe ile-cli-test.exe
