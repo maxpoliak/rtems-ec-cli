@@ -1,3 +1,6 @@
 [submodule "ile-cli"]
 	path = ile-cli
 	url = https://github.com/maxpoliak/ile-cli.git
+[submodule "rtems_waf"]
+	path = rtems_waf
+	url = git://git.rtems.org/rtems_waf.git
