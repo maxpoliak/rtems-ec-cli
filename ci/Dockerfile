@@ -19,6 +19,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 	libncurses5-dev \
 	zlib1g-dev \
 	python-dev \
+	curl \
 	locales \
 	qemu-system-x86 \
 	&& apt-get clean all
