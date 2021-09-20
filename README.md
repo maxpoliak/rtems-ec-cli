@@ -4,14 +4,21 @@ This is an example of using [ile-cli] for [RTEMS] RTOS based microcontrollers.
 
 ![][pic]
 
-Build on linux:
+Build all:
 ```
-./build-linux.sh
+./build.sh -a
+```
+Clear all:
+```
+./build.sh -c
+
 ```
 
-Build with Docker:
+Docker:
 ```
-./build-docker.sh
+./build-docker.sh -a
+
+./build-docker.sh -c
 ```
 
 Test on Qemu:
