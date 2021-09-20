@@ -4,30 +4,21 @@ This is an example of using [ile-cli] for [RTEMS] RTOS based microcontrollers.
 
 ![][pic]
 
-Build all:
 ```
-./build.sh -a
+(ubuntu-user)$ ./build.sh -h | or | ./build-docker.sh -h
+Use ./build.sh [OPTIONS...]
+    -a Build all: cross-compiler, RTEMS OS and ile-cli application
+    -c Clear ile-cli application
+    -h Print help
 ```
-Clear all:
+or don't set options when using the script to rebuild the ile-cli only
 ```
-./build.sh -c
-
-```
-
-Docker:
-```
-./build-docker.sh -a
-
-./build-docker.sh -c
+(ubuntu-user)$ ./build.sh
 ```
 
-Test on Qemu:
+Run [RTEMS] OS with [ile-cli] application on [QEMU]
 ```
-./qemu-test.sh
-```
-or
-```
-./ci/ci-build-docker.sh ./qemu-test.sh
+./run.sh | or | run-docker.sh
 ```
 
 [pic]:qemu-rtems-ile-cli.png
