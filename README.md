@@ -8,10 +8,11 @@ This is an example of using [ile-cli] for [RTEMS] RTOS based microcontrollers.
 (ubuntu-user)$ ./build.sh -h | or | ./build-docker.sh -h
 Use ./build.sh [OPTIONS...]
     -a Build all: cross-compiler, RTEMS OS and ile-cli application
-    -c Clear ile-cli application
+    -c Clear all
+    -r Delete the application's object files before building it
     -h Print help
 ```
-or don't set options when using the script to rebuild the ile-cli only
+Build the application only
 ```
 (ubuntu-user)$ ./build.sh
 ```

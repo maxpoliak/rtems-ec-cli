@@ -5,6 +5,7 @@ RTEMS_DIR="${ROOT_DIR}/rtems-rtos"
 RTEMS_VERSION="5.1"
 FLAG_BUILD_ALL=0
 FLAG_CLEAR_ALL=0
+FLAG_REBUILD_APP=0
 
 function make_preparations
 {
@@ -72,16 +73,19 @@ function build_application
     cp ${ROOT_DIR}/build/i386-rtems5-pc386/ile-cli-test.exe ${ROOT_DIR}/ile-cli-test.exe
 }
 
-while getopts "ach" OPTION; do
+while getopts "acrh" OPTION; do
     case "${OPTION}" in
         a)
             FLAG_BUILD_ALL=1;;
         c)
             FLAG_CLEAR_ALL=1;;
+        r)
+            FLAG_REBUILD_APP=1;;
         h)
             echo "Use $0 [OPTIONS...]"
             echo "    -a Build all: cross-compiler, RTEMS OS and ile-cli application"
-            echo "    -c Clear ile-cli application"
+            echo "    -c Clear all"
+            echo "    -r Delete the application's object files before building it"
             echo "    -h Print help"
             exit 0;;
         *)
@@ -102,6 +106,10 @@ if [[ ${FLAG_BUILD_ALL} -eq 1 ]] ; then
     make_preparations
     build_cross_compiler
     build_rtems_os
+fi;
+
+if [[ ${FLAG_REBUILD_APP} -eq 1 ]] ; then
+    rm -rf ${ROOT_DIR}/ile-cli-test.exe ${ROOT_DIR}/build/
 fi;
 
 build_application
