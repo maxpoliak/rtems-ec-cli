@@ -9,6 +9,5 @@ exec docker run \
 	--interactive --tty --rm --init \
 	--volume ${ROOT_DIR}:/src \
 	--workdir /src \
-	${VOLUME_NS_OPT:-} \
 	${CNT_IMAGE} \
 	"$@"
