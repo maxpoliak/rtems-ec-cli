@@ -1,5 +1,8 @@
 #!/bin/bash -eu
 
+RTEMS_ARCH="i386"
+RTEMS_BSP="pc386"
+
 ROOT_DIR="$(dirname $(realpath ${BASH_SOURCE[0]}))"
 RTEMS_DIR="${ROOT_DIR}/rtems-rtos"
 RTEMS_VERSION="5.1"
@@ -33,12 +36,12 @@ function build_cross_compiler
     source-builder/sb-check
     cd rtems
     ../source-builder/sb-set-builder \
-        --log=log-i386.txt \
+        --log=log-${RTEMS_ARCH}.txt \
         --prefix=${RTEMS_DIR}/rtems-exe \
-        5/rtems-i386.bset
+        5/rtems-${RTEMS_ARCH}.bset
 
     export PATH=${RTEMS_DIR}/rtems-exe/bin:$PATH
-    export PATH=${RTEMS_DIR}/rtems/rtems-exe/i386-rtems5/bin:$PATH
+    export PATH=${RTEMS_DIR}/rtems/rtems-exe/${RTEMS_ARCH}-rtems5/bin:$PATH
 }
 
 function build_rtems_os
@@ -52,14 +55,14 @@ function build_rtems_os
     ./bootstrap -H && ${RTEMS_DIR}/rtems-source-builder/source-builder/sb-bootstrap
     mkdir -p ${RTEMS_DIR}/tmp; cd ${RTEMS_DIR}/tmp
     ${RTEMS_DIR}/rtems/rtems-bsps
-    ${RTEMS_DIR}/rtems/configure --target=i386-rtems5 \
+    ${RTEMS_DIR}/rtems/configure --target=${RTEMS_ARCH}-rtems5 \
         --prefix=${RTEMS_DIR}/build --disable-multiprocessing \
         --disable-cxx --disable-rdbg \
         --enable-maintainer-mode --enable-tests \
         --enable-networking --enable-posix \
         --disable-itron --disable-deprecated \
         --disable-ada --disable-expada \
-        --enable-rtemsbsp=pc386 \
+        --enable-rtemsbsp=${RTEMS_BSP} \
         USE_COM1_AS_CONSOLE=1 BSP_PRESS_KEY_FOR_RESET=0
     make all
     make install
@@ -70,9 +73,10 @@ function build_application
     cd ${ROOT_DIR}
     ./waf configure --rtems=${RTEMS_DIR}/build \
         --rtems-tools=${RTEMS_DIR}/rtems-exe \
-        --rtems-bsps=i386/pc386
+        --rtems-bsps=${RTEMS_ARCH}/${RTEMS_BSP}
     ./waf
-    cp ${ROOT_DIR}/build/i386-rtems5-pc386/ile-cli-test.exe ${ROOT_DIR}/ile-cli-test.exe
+    cp ${ROOT_DIR}/build/${RTEMS_ARCH}-rtems5-${RTEMS_BSP}/ile-cli-test.exe \
+        ${ROOT_DIR}/ile-cli-test.exe
 }
 
 while getopts "acrh" OPTION; do
