@@ -1,7 +1,9 @@
 #!/bin/bash -e
 
+PROJECT_DIR="$(dirname $(realpath ${BASH_SOURCE[0]}))"
+
 if which docker &>/dev/null; then
-    ./ci/ci-build-docker.sh ./build.sh "$@"
+    ${PROJECT_DIR}/ci/ci-build-docker.sh ./build.sh "$@"
 else
     echo "Please install docker" >&2
     exit 1
