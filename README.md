@@ -2,7 +2,7 @@
 
 This is an example of using [ile-cli] for [RTEMS] RTOS based microcontrollers.
 
-![][pic]
+![](build-rtems-and-run-on-qemu.gif)
 
 ```
 (ubuntu-user)$ ./build.sh -h | or | ./build-docker.sh -h
@@ -22,7 +22,6 @@ Run [RTEMS] OS with [ile-cli] application on [QEMU]
 ./run.sh | or | run-docker.sh
 ```
 
-[pic]:qemu-rtems-ile-cli.png
 [ile-cli]: https://github.com/maxpoliak/ile-cli
 [RTEMS]: https://www.rtems.org/
 [QEMU]: https://www.qemu.org/
