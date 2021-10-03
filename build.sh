@@ -12,24 +12,6 @@ FLAG_REBUILD_APP=0
 FLAG_BUILD_RTEMS=0
 FLAG_BUILD_CROSS=0
 
-function make_preparations
-{
-    echo "#########################################################"
-    echo "  Make preparations ..."
-    echo "#########################################################"
-
-    set +e
-    git submodule update --init --checkout
-    curl https://waf.io/waf-2.0.19 > waf
-    chmod +x waf
-
-    mkdir -p ${RTEMS_DIR}; cd ${RTEMS_DIR}
-    git clone git://git.rtems.org/rtems-source-builder.git -b ${RTEMS_VERSION}
-    # git clone git://git.rtems.org/rtems.git -b ${RTEMS_VERSION}
-    git clone https://github.com/maxpoliak/rtems.git -b ile-cli
-    set -e
-}
-
 function build_cross_compiler
 {
     rm -Rf ${RTEMS_DIR}/rtems-exe
@@ -164,7 +146,6 @@ if [[ ${FLAG_BUILD_RTEMS} -eq 1 ]] ; then
 fi;
 
 if [[ ${FLAG_BUILD_ALL} -eq 1 ]] ; then
-    make_preparations
     build_cross_compiler
     build_rtems_os
 fi;
