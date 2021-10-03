@@ -45,14 +45,14 @@ function build_cross_compiler
         5/rtems-${RTEMS_ARCH}.bset
 
     export PATH=${RTEMS_DIR}/rtems-exe/bin:$PATH
-    export PATH=${RTEMS_DIR}/rtems/rtems-exe/${RTEMS_ARCH}-rtems5/bin:$PATH
+    export PATH=${RTEMS_DIR}/rtems-exe/${RTEMS_ARCH}-rtems5/bin:$PATH
 }
 
 function build_rtems_os
 {
     rm -Rf ${RTEMS_DIR}/tmp ${RTEMS_DIR}/build
     export PATH=${RTEMS_DIR}/rtems-exe/bin:$PATH
-    export PATH=${RTEMS_DIR}/rtems/rtems-exe/${RTEMS_ARCH}-rtems5/bin:$PATH
+    export PATH=${RTEMS_DIR}/rtems-exe/${RTEMS_ARCH}-rtems5/bin:$PATH
     echo "#########################################################"
     echo "  Build RTEMS OS  ..."
     echo "#########################################################"
