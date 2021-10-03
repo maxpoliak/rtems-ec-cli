@@ -74,6 +74,7 @@ function build_application
     ./waf configure --rtems=${RTEMS_DIR}/build \
         --rtems-tools=${RTEMS_DIR}/rtems-exe \
         --rtems-bsps=${RTEMS_ARCH}/${RTEMS_BSP}
+    ./waf --version
     ./waf
     cp ${ROOT_DIR}/build/${RTEMS_ARCH}-rtems5-${RTEMS_BSP}/ile-cli-test.exe \
         ${ROOT_DIR}/ile-cli-test.exe
