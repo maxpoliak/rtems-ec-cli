@@ -23,7 +23,8 @@ function make_preparations
 
     mkdir -p ${RTEMS_DIR}; cd ${RTEMS_DIR}
     git clone git://git.rtems.org/rtems-source-builder.git -b ${RTEMS_VERSION}
-    git clone git://git.rtems.org/rtems.git -b ${RTEMS_VERSION}
+    # git clone git://git.rtems.org/rtems.git -b ${RTEMS_VERSION}
+    git clone https://github.com/maxpoliak/rtems.git -b ile-cli
     set -e
 }
 
