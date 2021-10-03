@@ -57,14 +57,21 @@ function build_rtems_os
     mkdir -p ${RTEMS_DIR}/tmp; cd ${RTEMS_DIR}/tmp
     ${RTEMS_DIR}/rtems/rtems-bsps
     ${RTEMS_DIR}/rtems/configure --target=${RTEMS_ARCH}-rtems5 \
-        --prefix=${RTEMS_DIR}/build --disable-multiprocessing \
-        --disable-cxx --disable-rdbg \
-        --enable-maintainer-mode --enable-tests \
-        --enable-networking --enable-posix \
-        --disable-itron --disable-deprecated \
-        --disable-ada --disable-expada \
+        --prefix=${RTEMS_DIR}/build \
+        --disable-multiprocessing \
+        --disable-cxx \
+        --disable-rdbg \
+        --enable-maintainer-mode \
+        --enable-tests \
+        --enable-networking \
+        --enable-posix \
+        --disable-itron \
+        --disable-deprecated \
+        --disable-ada \
+        --disable-expada \
         --enable-rtemsbsp=${RTEMS_BSP} \
-        USE_COM1_AS_CONSOLE=1 BSP_PRESS_KEY_FOR_RESET=0
+        USE_COM1_AS_CONSOLE=1 \
+        BSP_PRESS_KEY_FOR_RESET=0
     make all
     make install
 }
@@ -81,26 +88,44 @@ function build_application
         ${ROOT_DIR}/ile-cli-test.exe
 }
 
-while getopts "acrh" OPTION; do
-    case "${OPTION}" in
-        a)
-            FLAG_BUILD_ALL=1;;
-        c)
-            FLAG_CLEAR_ALL=1;;
-        r)
-            FLAG_REBUILD_APP=1;;
-        h)
-            echo "Use $0 [OPTIONS...]"
-            echo "    -a Build all: cross-compiler, RTEMS OS and ile-cli application"
-            echo "    -c Clear all"
-            echo "    -r Delete the application's object files before building it"
-            echo "    -h Print help"
-            exit 0;;
+function print_help
+{
+    echo "Use $0 [OPTIONS...]"
+    echo "  -a | all       Build all: cross-compiler, RTEMS OS and ile-cli application"
+    echo "  -C | cleanall  Clear all"
+    echo "  -r | rebuild   Set rebuils flag"
+    echo "                 Delete the application's object files before building it"
+    echo "  -h | help      Print help"
+}
+
+while [ "${1:-}" != "" ]; do
+    case "$1" in
+        "-a" | "all")
+            FLAG_BUILD_ALL=1
+            shift
+            break
+            ;;
+        "-C" | "cleanall")
+            FLAG_CLEAR_ALL=1
+            shift
+            break
+            ;;
+        "-r" | "rebuild")
+            FLAG_REBUILD_APP=1
+            shift
+            ;;
+        "-h" | "help")
+            print_help
+            exit 0
+            ;;
         *)
-            exit 1;;
-  esac
+            echo "invalid command or option ($1)"
+            print_help
+            exit 1
+            ;;
+    esac
+    shift
 done
-shift $(($OPTIND - 1))
 
 if [[ ${FLAG_CLEAR_ALL} -eq 1 ]] ; then
     echo "#########################################################"
