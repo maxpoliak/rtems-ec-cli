@@ -34,11 +34,6 @@ and RTEMS object files. This will be located in the ./rtems-rtos folder.
 ```
 (user)$ ./build.sh -a
 ```
-Use scripts with the name xxxxx-docker.sh to run in the [docker] container.
-
-```
-(user)$ ./build-docker.sh -h
-```
 
 Build the application only, without rebuilding tools and RTEMS OS:
 ```
@@ -46,6 +41,11 @@ Build the application only, without rebuilding tools and RTEMS OS:
 ```
 The Waf build system ([3],[4]) is used for the output executable file of the application.
 
+Use the docker.sh scripts to run in the [docker] container.
+
+```
+(user)$ ./docker.sh ./build.sh -h
+```
 ### Test
 
 Test the result in [QEMU] using the script:
