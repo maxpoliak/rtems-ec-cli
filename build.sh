@@ -9,6 +9,7 @@ RTEMS_VERSION="5.1"
 FLAG_BUILD_ALL=0
 FLAG_CLEAR_ALL=0
 FLAG_REBUILD_APP=0
+FLAG_BUILD_RTEMS=0
 
 function make_preparations
 {
@@ -47,6 +48,7 @@ function build_cross_compiler
 
 function build_rtems_os
 {
+    rm -Rf ${RTEMS_DIR}/tmp ${RTEMS_DIR}/build
     echo "#########################################################"
     echo "  Build RTEMS OS  ..."
     echo "#########################################################"
@@ -92,6 +94,7 @@ function print_help
 {
     echo "Use $0 [OPTIONS...]"
     echo "  -a | all       Build all: cross-compiler, RTEMS OS and ile-cli application"
+    echo "       rtems     Build RTEMS OS"
     echo "  -C | cleanall  Clear all"
     echo "  -r | rebuild   Set rebuils flag"
     echo "                 Delete the application's object files before building it"
@@ -102,6 +105,11 @@ while [ "${1:-}" != "" ]; do
     case "$1" in
         "-a" | "all")
             FLAG_BUILD_ALL=1
+            shift
+            break
+            ;;
+        "rtems")
+            FLAG_BUILD_RTEMS=1
             shift
             break
             ;;
@@ -132,6 +140,11 @@ if [[ ${FLAG_CLEAR_ALL} -eq 1 ]] ; then
     echo "  Clean all ..."
     echo "#########################################################"
     rm -rf ${ROOT_DIR}/ile-cli-test.exe ${ROOT_DIR}/build/ ${RTEMS_DIR}
+    exit 0
+fi;
+
+if [[ ${FLAG_BUILD_RTEMS} -eq 1 ]] ; then
+    build_rtems_os
     exit 0
 fi;
 
