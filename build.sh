@@ -6,6 +6,7 @@ RTEMS_BSP="pc386"
 ROOT_DIR="$(dirname $(realpath ${BASH_SOURCE[0]}))"
 RTEMS_DIR="${ROOT_DIR}/rtems-rtos"
 RTEMS_VERSION="5.1"
+OUT_EXE_NAME="rtems-ec-cli.exe"
 FLAG_BUILD_ALL=0
 FLAG_CLEAR_ALL=0
 FLAG_REBUILD_APP=0
@@ -72,8 +73,8 @@ function build_application
         --rtems-bsps=${RTEMS_ARCH}/${RTEMS_BSP}
     ${ROOT_DIR}/waf --version
     ${ROOT_DIR}/waf -vvv
-    cp ${ROOT_DIR}/build/${RTEMS_ARCH}-rtems5-${RTEMS_BSP}/ile-cli-test.exe \
-        ${ROOT_DIR}/ile-cli-test.exe
+    cp ${ROOT_DIR}/build/${RTEMS_ARCH}-rtems5-${RTEMS_BSP}/${OUT_EXE_NAME} \
+        ${ROOT_DIR}/${OUT_EXE_NAME}
 }
 
 function print_help
@@ -126,7 +127,7 @@ if [[ ${FLAG_CLEAR_ALL} -eq 1 ]] ; then
     echo "#########################################################"
     echo "  Clean all ..."
     echo "#########################################################"
-    rm -rf ${ROOT_DIR}/ile-cli-test.exe ${ROOT_DIR}/build/ ${RTEMS_DIR}
+    rm -rf ${ROOT_DIR}/${OUT_EXE_NAME} ${ROOT_DIR}/build/ ${RTEMS_DIR}
     exit 0
 fi;
 
@@ -146,7 +147,7 @@ if [[ ${FLAG_BUILD_ALL} -eq 1 ]] ; then
 fi;
 
 if [[ ${FLAG_REBUILD_APP} -eq 1 ]] ; then
-    rm -rf ${ROOT_DIR}/ile-cli-test.exe ${ROOT_DIR}/build/
+    rm -rf ${ROOT_DIR}/${OUT_EXE_NAME} ${ROOT_DIR}/build/
 fi;
 
 build_application

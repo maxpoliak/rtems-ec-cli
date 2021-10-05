@@ -29,7 +29,7 @@ def build(bld):
     rtems.build(bld)
 
     bld(features = 'c cprogram',
-        target = 'ile-cli-test.exe',
+        target = 'rtems-ec-cli.exe',
         cflags = '-g -O2',
         includes = 'ile-cli/includes .',
         source = ['main.c',
