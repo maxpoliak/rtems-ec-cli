@@ -113,6 +113,7 @@ while [ "${1:-}" != "" ]; do
         "-r" | "rebuild")
             FLAG_REBUILD_APP=1
             shift
+            break
             ;;
         "-h" | "help")
             print_help
