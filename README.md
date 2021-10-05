@@ -1,11 +1,11 @@
-## Command line interface for embedded controllers based on RTEMS OS
+## Command line interface for embedded controllers based on RTEMS RTOS
 
-### This is an example of using [ile-cli] for [RTEMS] RTOS.
+### Based on the [ile-cli] project.
 
-RTEMS (Real-Time Executive for Multiprocessor Systems)  is a real-time operating
-system kernel used around the world and in space. RTEMS is a free real-time
-operating system (RTOS) designed for deeply embedded systems such as automobile
-electronics, robotic controllers, and on-board satellite instruments ([1],[2]).
+[RTEMS] (Real-Time Executive for Multiprocessor Systems [1],[2]) is a real-time
+operating system kernel used around the world and in space. RTEMS is a free
+real-time operating system (RTOS) designed for deeply embedded systems such as
+automobile electronics, robotic controllers, and on-board satellite instruments.
 
 This example is the result of a study of this OS. I was interested in learning
 how to build an image and create applications for it. At the moment, this project
@@ -68,7 +68,33 @@ Test the result in [QEMU] using the script:
 ./run.sh
 ```
 
-[1]: https://summerofcode.withgoogle.com/archive/2019/organizations/4579649638629376/
+### Using GRUB2 to boot
+
+The next step is to load the RTEMS and EC-CLI application from an external disk to
+QEMU. To do this, you need to create a virtual image of the boot disk, install
+grub on it and copy the exe file. You can do all this with create-boot-image.sh:
+```
+dd if=/dev/zero of=boot-disk.img bs=512 count=32130
+```
+```
+sudo ./create-boot-image.sh --file boot-disk.img
+```
+After that you can test the result in QEMU:
+```
+qemu-system-i386 -m 128 -hda boot-disk.img -M q35 -nographic
+```
+
+### coreboot + seabios
+
+To make testing similar to using real hardware, you can build [coreboot] with
+[seabios] payload for "QEMU x86 q35/ich9" machine and run it together with
+rtems-boot.img on QEMU:
+
+```
+qemu-system-i386 -m 128 -bios coreboot.rom -hda rtems-boot.img -M q35 -nographic
+```
+
+[1]: https://www.rtems.org/
 [2]: https://en.wikipedia.org/wiki/RTEMS
 [3]: https://en.wikipedia.org/wiki/Waf
 [4]: https://devel.rtems.org/wiki/Docs/Build
@@ -76,5 +102,7 @@ Test the result in [QEMU] using the script:
 [LPC1768]: https://www.nxp.com/products/processors-and-microcontrollers/arm-microcontrollers/general-purpose-mcus/lpc1700-cortex-m3:MC_1403790745385#/
 [docker]: https://en.wikipedia.org/wiki/Docker_(software)
 [ile-cli]: https://github.com/maxpoliak/ile-cli
-[RTEMS]: https://www.rtems.org/
+[RTEMS]: https://summerofcode.withgoogle.com/archive/2019/organizations/4579649638629376/
 [QEMU]: https://www.qemu.org/
+[coreboot]: https://www.coreboot.org/
+[seabios]: https://www.seabios.org/SeaBIOS
