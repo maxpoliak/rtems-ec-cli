@@ -21,7 +21,7 @@ to create your own systems.
 
 Make some preparations once before start the building process:
 ```
-git clone https://github.com/maxpoliak/rtems-ec-cli.git && cd rtems-ec-cli && ./preparations.sh
+git clone https://github.com/maxpoliak/rtems-ec-cli.git && ./rtems-ec-cli/preparations.sh
 ```
 
 Use the help to print all the available commands:
