@@ -24,21 +24,20 @@ Make some preparations once before start the building process:
 git clone https://github.com/maxpoliak/rtems-ec-cli.git && cd rtems-ec-cli && ./preparations.sh
 ```
 
-Use the help to print all the available options:
+Use the help to print all the available commands:
 
 ```
 ./build.sh help
 ```
 ```
-Use ./build.sh [OPTIONS...]
-Use $0 [OPTIONS...]"
-  -a | all       Build all: cross-compiler, RTEMS OS and ile-cli application
-       rtems     Build RTEMS OS
-       cross     Build cross-compiler
-  -C | cleanall  Clear all
-  -r | rebuild   Set rebuild flag
-                 Delete the application's object files before building it
-  -h | help      Print help
+Use ./build.sh [COMMANDS...]
+  all         Build all: cross-compiler, RTEMS OS and ile-cli application
+  rtems       Build RTEMS OS
+  cross       Build cross-compiler
+  cleanall    Clear all
+  rebuild     Set rebuild flag
+              Delete the application's object files before building it
+  help        Print help
 ```
 
 For the first build, use the build script with the "-a" or "all" option to build

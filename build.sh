@@ -78,54 +78,48 @@ function build_application
 
 function print_help
 {
-    echo "Use $0 [OPTIONS...]"
-    echo "  -a | all       Build all: cross-compiler, RTEMS OS and ile-cli application"
-    echo "       rtems     Build RTEMS OS"
-    echo "       cross     Build cross-compiler"
-    echo "  -C | cleanall  Clear all"
-    echo "  -r | rebuild   Set rebuils flag"
-    echo "                 Delete the application's object files before building it"
-    echo "  -h | help      Print help"
+    echo "Use $0 [COMMANDS...]"
+    echo "  all         Build all: cross-compiler, RTEMS OS and ile-cli application"
+    echo "  rtems       Build RTEMS OS"
+    echo "  cross       Build cross-compiler"
+    echo "  cleanall    Clear all"
+    echo "  rebuild     Set rebuils flag"
+    echo "              Delete the application's object files before building it"
+    echo "  help        Print help"
 }
 
 while [ "${1:-}" != "" ]; do
     case "$1" in
-        "-a" | "all")
+        "all")
             FLAG_BUILD_ALL=1
-            shift
             break
             ;;
         "rtems")
             FLAG_BUILD_RTEMS=1
-            shift
             break
             ;;
         "cross")
             FLAG_BUILD_CROSS=1
-            shift
             break
             ;;
-        "-C" | "cleanall")
+        "cleanall")
             FLAG_CLEAR_ALL=1
-            shift
             break
             ;;
-        "-r" | "rebuild")
+        "rebuild")
             FLAG_REBUILD_APP=1
-            shift
             break
             ;;
-        "-h" | "help")
+        "help")
             print_help
             exit 0
             ;;
         *)
-            echo "invalid command or option ($1)"
+            echo "invalid command ($1)"
             print_help
             exit 1
             ;;
     esac
-    shift
 done
 
 if [[ ${FLAG_CLEAR_ALL} -eq 1 ]] ; then
