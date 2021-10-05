@@ -4,7 +4,7 @@ RTEMS_ARCH="i386"
 RTEMS_BSP="pc386"
 
 ROOT_DIR="$(dirname $(realpath ${BASH_SOURCE[0]}))"
-RTEMS_DIR="${ROOT_DIR}/rtems-rtos"
+RTEMS_DIR="${ROOT_DIR}/rtems_rtos"
 RTEMS_VERSION="5.1"
 OUT_EXE_NAME="rtems-ec-cli.exe"
 FLAG_BUILD_ALL=0

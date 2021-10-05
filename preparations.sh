@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ROOT_DIR="$(dirname $(realpath ${BASH_SOURCE[0]}))"
-RTEMS_DIR="${ROOT_DIR}/rtems-rtos"
+RTEMS_DIR="${ROOT_DIR}/rtems_rtos"
 RTEMS_VERSION="5.1"
 
 cd ${ROOT_DIR}
