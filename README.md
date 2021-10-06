@@ -15,7 +15,7 @@ and ARM-microcontrollers [LPC1768] .
 Perhaps this work will be interesting to someone and you will use this knowledge
 to create your own systems.
 
-![demonstration](demonstration.gif)
+![demonstration](https://raw.githubusercontent.com/maxpoliak/resources/master/rtems-ec-cli/demonstration.gif)
 
 ### Build
 
