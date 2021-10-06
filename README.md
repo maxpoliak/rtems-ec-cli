@@ -2,15 +2,15 @@
 
 ### Based on the [ile-cli] project.
 
-[RTEMS] (Real-Time Executive for Multiprocessor Systems [1],[2]) is a real-time
-operating system kernel used around the world and in space. RTEMS is a free
-real-time operating system (RTOS) designed for deeply embedded systems such as
-automobile electronics, robotic controllers, and on-board satellite instruments.
+RTEMS (Real-Time Executive for Multiprocessor Systems [1],[2],[3]) is a
+real-time operating system kernel used around the world and in space. RTEMS is a
+free real-time operating system (RTOS) designed for deeply embedded systems such
+as automobile electronics, robotic controllers, and on-board satellite instruments.
 
-This example is the result of a study of this OS. I was interested in learning
+This example is the result of a study of this RTOS. I was interested in learning
 how to build an image and create applications for it. At the moment, this project
 is used as a base for creating embedded controller applications based on x86 CPU
-and ARM-microcontrollers [LPC1768] .
+and ARM-microcontrollers.
 
 Perhaps this work will be interesting to someone and you will use this knowledge
 to create your own systems.
@@ -52,7 +52,7 @@ Build the application only, without rebuilding tools and RTEMS OS:
 ```
 ./build.sh
 ```
-The Waf build system ([3],[4]) is used for the output executable file of the
+The Waf build system ([4],[5]) is used for the output executable file of the
 application.
 
 Use the docker.sh scripts to run in the [docker] container.
@@ -94,15 +94,14 @@ rtems-boot.img on QEMU:
 qemu-system-i386 -m 128 -bios coreboot.rom -hda rtems-boot.img -M q35 -nographic
 ```
 
-[1]: https://www.rtems.org/
-[2]: https://en.wikipedia.org/wiki/RTEMS
-[3]: https://en.wikipedia.org/wiki/Waf
-[4]: https://devel.rtems.org/wiki/Docs/Build
+[1]: https://summerofcode.withgoogle.com/archive/2019/organizations/4579649638629376/
+[2]: https://www.rtems.org/
+[3]: https://en.wikipedia.org/wiki/RTEMS
+[4]: https://en.wikipedia.org/wiki/Waf
+[5]: https://devel.rtems.org/wiki/Docs/Build
 
-[LPC1768]: https://www.nxp.com/products/processors-and-microcontrollers/arm-microcontrollers/general-purpose-mcus/lpc1700-cortex-m3:MC_1403790745385#/
 [docker]: https://en.wikipedia.org/wiki/Docker_(software)
 [ile-cli]: https://github.com/maxpoliak/ile-cli
-[RTEMS]: https://summerofcode.withgoogle.com/archive/2019/organizations/4579649638629376/
 [QEMU]: https://www.qemu.org/
 [coreboot]: https://www.coreboot.org/
 [seabios]: https://www.seabios.org/SeaBIOS
