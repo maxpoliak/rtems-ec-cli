@@ -86,13 +86,20 @@ qemu-system-i386 -m 128 -hda boot-disk.img -M q35 -nographic
 
 ### coreboot + seabios
 
-To make testing similar to using real hardware, you can build [coreboot] with
-[seabios] payload for "QEMU x86 q35/ich9" machine and run it together with
-rtems-boot.img on QEMU:
+The main and most interesting task of this project is to run the application on
+real hardware. This task can be solved without any problems if you (like us) use
+[coreboot] as BIOS and [seabios] as a payload in your x86 embedded systems.
+Let's test this by building coreboot + seabios image for the "QEMU x86 q35/ich9"
+machine and runn it in QEMU with the virtual disk created at the previous stage:
 
 ```
-qemu-system-i386 -m 128 -bios coreboot.rom -hda rtems-boot.img -M q35 -nographic
+qemu-system-i386 -m 128 -bios coreboot.rom -hda boot-disk.img -M q35 -nographic
 ```
+You can also build coreboot for your board and run real-time applications on it.
+
+![](https://raw.githubusercontent.com/maxpoliak/resources/master/rtems-ec-cli/irc-logo.bmp)
+
+TODO: Try using ACRN hypervisor to run RTEMS with the Linux kernel
 
 [1]: https://summerofcode.withgoogle.com/archive/2019/organizations/4579649638629376/
 [2]: https://www.rtems.org/
@@ -100,6 +107,7 @@ qemu-system-i386 -m 128 -bios coreboot.rom -hda rtems-boot.img -M q35 -nographic
 [4]: https://en.wikipedia.org/wiki/Waf
 [5]: https://devel.rtems.org/wiki/Docs/Build
 
+[ACRN]: https://projectacrn.org/
 [docker]: https://en.wikipedia.org/wiki/Docker_(software)
 [ile-cli]: https://github.com/maxpoliak/ile-cli
 [QEMU]: https://www.qemu.org/
