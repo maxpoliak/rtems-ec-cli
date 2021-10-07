@@ -19,13 +19,26 @@ to create your own systems.
 
 ### Build
 
+Use the following packages to build the project on Ubuntu:
+```
+sudo apt-get build-dep build-essential gcc-defaults g++ gdb git \
+             unzip pax bison flex texinfo unzip python3-dev libpython-dev \
+             libncurses5-dev zlib1g-dev wget
+```
+or use Docker:
+```
+./docker.sh [CONSOLE COMMANDS...]
+```
+```
+./docker.sh ./build.sh help
+```
+
 Make some preparations once before start the building process:
 ```
 git clone https://github.com/maxpoliak/rtems-ec-cli.git && ./rtems-ec-cli/preparations.sh
 ```
 
-Use the help to print all the available commands:
-
+Print the help to see all available commands:
 ```
 ./build.sh help
 ```
@@ -55,11 +68,6 @@ Build the application only, without rebuilding tools and RTEMS OS:
 The Waf build system ([4],[5]) is used for the output executable file of the
 application.
 
-Use the docker.sh scripts to run in the [docker] container.
-
-```
-./docker.sh ./build.sh all
-```
 ### Test
 
 Test the result in [QEMU] using the script:
@@ -89,15 +97,15 @@ qemu-system-i386 -m 128 -hda boot-disk.img -M q35 -nographic
 The main and most interesting task of this project is to run the application on
 real hardware. This task can be solved without any problems if you (like us) use
 [coreboot] as BIOS and [seabios] as a payload in your x86 embedded systems.
-Let's test this by building coreboot + seabios image for the "QEMU x86 q35/ich9"
-machine and runn it in QEMU with the virtual disk created at the previous stage:
+Let's test this by building coreboot + seabios [image] for the "QEMU x86 q35/ich9"
+machine and run it in QEMU with the virtual disk created at the previous stage:
 
 ```
 qemu-system-i386 -m 128 -bios coreboot.rom -hda boot-disk.img -M q35 -nographic
 ```
 You can also build coreboot for your board and run real-time applications on it.
 
-![](https://raw.githubusercontent.com/maxpoliak/resources/master/rtems-ec-cli/irc-logo.bmp)
+![hello-logo-rtems-ec-cli](https://github.com/maxpoliak/resources/blob/master/rtems-ec-cli/hello-logo-rtems-ec-cli.jpg)
 
 TODO: Try using ACRN hypervisor to run RTEMS with the Linux kernel
 
@@ -113,3 +121,4 @@ TODO: Try using ACRN hypervisor to run RTEMS with the Linux kernel
 [QEMU]: https://www.qemu.org/
 [coreboot]: https://www.coreboot.org/
 [seabios]: https://www.seabios.org/SeaBIOS
+[image]: https://github.com/maxpoliak/rtems-ec-cli/releases/download/v1.0/rtems-ec-cli-release-v1.0.tar.gz
