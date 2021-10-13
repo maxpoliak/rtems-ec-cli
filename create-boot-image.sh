@@ -8,9 +8,9 @@ MOUNT_DIR_NAME="rtems-boot-disk-image"
 function print_help
 {
     echo "Use $0 OPTIONS..."
-    echo "  -f | --file       Set the path to the image file"
-    echo "  -v | --verbose    Print verbosity info"
-    echo "  -h | --help       Print help"
+    echo "  -f | --file <path/to/file>  Set the path to the image file"
+    echo "  -v | --verbose              Print verbosity info"
+    echo "  -h | --help                 Print help"
 }
 
 if (( $(id -u) != 0 ))
