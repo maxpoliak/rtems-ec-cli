@@ -132,7 +132,8 @@ rtems_task Init(
   rtems_task_argument ignored
 )
 {
-  ile_cli_console_output("RTEMS & ile-cli. Please any key to continue...\n");
+  ile_cli_console_output("Version: " VERSION_LABLE " \n");
+  ile_cli_console_output("Please any key to continue...\n");
 
   cli_vterm_init(&ops);
   change_serial_settings(STDIN_FILENO, &term);

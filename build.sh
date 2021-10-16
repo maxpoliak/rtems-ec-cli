@@ -13,6 +13,14 @@ FLAG_REBUILD_APP=0
 FLAG_BUILD_RTEMS=0
 FLAG_BUILD_CROSS=0
 
+function get_version_lable_proj
+{
+   version_rtems=$(git -C ${RTEMS_DIR}/rtems describe --always --abbrev=6)
+   version_base=$(git -C ${ROOT_DIR} describe --tags --dirty --abbrev=4)
+   branch=$(git -C ${ROOT_DIR} branch --show-current)
+   echo ${RTEMS_ARCH}"-"${RTEMS_BSP}"-"$version_rtems"-"$branch"-"$version_base
+}
+
 function build_cross_compiler
 {
     rm -Rf ${RTEMS_DIR}/rtems-exe
@@ -68,7 +76,8 @@ function build_rtems_os
 function build_application
 {
     cd ${ROOT_DIR}
-    ${ROOT_DIR}/waf configure --rtems=${RTEMS_DIR}/build \
+    ${ROOT_DIR}/waf --project-version=$(get_version_lable_proj) \
+        configure --rtems=${RTEMS_DIR}/build \
         --rtems-tools=${RTEMS_DIR}/rtems-exe \
         --rtems-bsps=${RTEMS_ARCH}/${RTEMS_BSP}
     ${ROOT_DIR}/waf --version
