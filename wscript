@@ -21,14 +21,20 @@ def bsp_configure(conf, arch_bsp):
 
 def options(opt):
     rtems.options(opt)
+    opt.add_option('--project-version',
+                   action='store',
+                   default = 'unknown',
+                   dest = 'proj_version',
+                   help = 'Add a version label for this project')
 
 def configure(conf):
+    conf.env.PROJ_VERSION = conf.options.proj_version
     rtems.configure(conf, bsp_configure = bsp_configure)
 
 def build(bld):
     rtems.build(bld)
     bld.env.CFLAGS += ['-g', '-O2']
-
+    bld.env.CFLAGS += ['-DVERSION_LABLE="%s"' % bld.env.PROJ_VERSION]
     bld(features = 'c cprogram',
         target = 'rtems-ec-cli.exe',
         includes = 'ile-cli/includes .',
