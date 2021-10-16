@@ -27,10 +27,10 @@ def configure(conf):
 
 def build(bld):
     rtems.build(bld)
+    bld.env.CFLAGS += ['-g', '-O2']
 
     bld(features = 'c cprogram',
         target = 'rtems-ec-cli.exe',
-        cflags = '-g -O2',
         includes = 'ile-cli/includes .',
         source = ['main.c',
                   'init.c',
