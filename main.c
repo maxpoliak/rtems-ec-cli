@@ -133,6 +133,11 @@ rtems_task Init(
 )
 {
   ile_cli_console_output("Version: " VERSION_LABLE " \n");
+  ile_cli_console_output("    #/#/#/  #/#/#/#/#/ #/#/#/#/ #/      #/   #/#/#/#/\n");
+  ile_cli_console_output("   #/    #/    #/     #/       #/#/  #/#/  #/\n");
+  ile_cli_console_output("  #/#/#/      #/     #/#/#/   #/  #/  #/    #/#/\n");
+  ile_cli_console_output(" #/    #/    #/     #/       #/      #/        #/\n");
+  ile_cli_console_output("#/    #/    #/     #/#/#/#/ #/      #/  #/#/#/#/\n\n");
   ile_cli_console_output("Please any key to continue...\n");
 
   cli_vterm_init(&ops);
