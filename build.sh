@@ -71,6 +71,7 @@ function build_rtems_os
         BSP_PRESS_KEY_FOR_RESET=0
     make all
     make install
+    rm -Rf ${RTEMS_DIR}/tmp
 }
 
 function build_application
