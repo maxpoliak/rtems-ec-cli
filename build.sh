@@ -84,6 +84,7 @@ function build_application
     ${ROOT_DIR}/waf -vvv
     cp ${ROOT_DIR}/build/${RTEMS_ARCH}-rtems5-${RTEMS_BSP}/${OUT_EXE_NAME} \
         ${ROOT_DIR}/${OUT_EXE_NAME}
+    tar -C ${ROOT_DIR} -zcvf ${ROOT_DIR}/$(get_version_lable_proj).tar.gz ${OUT_EXE_NAME}
 }
 
 function print_help
@@ -156,7 +157,9 @@ if [[ ${FLAG_BUILD_ALL} -eq 1 ]] ; then
 fi;
 
 if [[ ${FLAG_REBUILD_APP} -eq 1 ]] ; then
-    rm -rf ${ROOT_DIR}/${OUT_EXE_NAME} ${ROOT_DIR}/build/
+    rm -rf ${ROOT_DIR}/${OUT_EXE_NAME} \
+        ${ROOT_DIR}/build/ \
+        ${ROOT_DIR}/$(get_version_lable_proj).tar.gz
 fi;
 
 build_application
