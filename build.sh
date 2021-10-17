@@ -13,6 +13,13 @@ FLAG_REBUILD_APP=0
 FLAG_BUILD_RTEMS=0
 FLAG_BUILD_CROSS=0
 
+function get_version_lable_rtems_os
+{
+   base=$(git -C ${RTEMS_DIR}/rtems describe --tags --dirty)
+   branch=$(git -C ${RTEMS_DIR}/rtems branch --show-current)
+   echo ${RTEMS_ARCH}"-"${RTEMS_BSP}"-"$branch"-"$base
+}
+
 function get_version_lable_proj
 {
    version_rtems=$(git -C ${RTEMS_DIR}/rtems describe --always --abbrev=6)
@@ -41,7 +48,7 @@ function build_cross_compiler
 
 function build_rtems_os
 {
-    rm -Rf ${RTEMS_DIR}/tmp ${RTEMS_DIR}/build
+    rm -Rf ${RTEMS_DIR}/tmp ${RTEMS_DIR}/build-*
     export PATH=${RTEMS_DIR}/rtems-exe/bin:$PATH
     export PATH=${RTEMS_DIR}/rtems-exe/${RTEMS_ARCH}-rtems5/bin:$PATH
     echo "#########################################################"
@@ -54,7 +61,7 @@ function build_rtems_os
     mkdir -p ${RTEMS_DIR}/tmp; cd ${RTEMS_DIR}/tmp
     ${RTEMS_DIR}/rtems/rtems-bsps
     ${RTEMS_DIR}/rtems/configure --target=${RTEMS_ARCH}-rtems5 \
-        --prefix=${RTEMS_DIR}/build \
+        --prefix=${RTEMS_DIR}/build-$(get_version_lable_rtems_os) \
         --disable-multiprocessing \
         --disable-cxx \
         --disable-rdbg \
@@ -78,7 +85,7 @@ function build_application
 {
     cd ${ROOT_DIR}
     ${ROOT_DIR}/waf --project-version=$(get_version_lable_proj) \
-        configure --rtems=${RTEMS_DIR}/build \
+        configure --rtems=${RTEMS_DIR}/build-$(get_version_lable_rtems_os) \
         --rtems-tools=${RTEMS_DIR}/rtems-exe \
         --rtems-bsps=${RTEMS_ARCH}/${RTEMS_BSP}
     ${ROOT_DIR}/waf --version
