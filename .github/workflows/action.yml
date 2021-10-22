@@ -1,0 +1,27 @@
+name: Build CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: install all packages
+      run: apt-get install -yy build-essential gcc g++ gdb git unzip pax bison flex texinfo unzip python3-dev libncurses5-dev zlib1g-dev python-dev curl locales && apt-get clean all
+    - name: localedef
+      run: localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+    - name: make preparations
+      run: ./preparations.sh
+    - name: build cross-tools
+      run: ./build.sh cross
+    - name: build rtems rtos
+      run: ./build.sh rtems
+    - name: build application
+      run: ./build.sh
