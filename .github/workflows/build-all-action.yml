@@ -12,11 +12,12 @@ jobs:
   build-all-components:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - name: install all packages
         run: sudo apt-get install -yy build-essential gcc g++ gdb git unzip pax bison flex texinfo unzip python3-dev libncurses5-dev zlib1g-dev python-dev curl locales && sudo apt-get clean all
       - name: localedef
         run: sudo localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+      - name: clone the project repository
+        run: git clone https://github.com/maxpoliak/rtems-ec-cli.git .
       - name: make preparations
         run: ./preparations.sh
       - name: build cross-tools
