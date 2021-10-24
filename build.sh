@@ -44,6 +44,7 @@ function build_cross_compiler
 
     export PATH=${RTEMS_DIR}/rtems-exe/bin:$PATH
     export PATH=${RTEMS_DIR}/rtems-exe/${RTEMS_ARCH}-rtems5/bin:$PATH
+    ${RTEMS_DIR}/rtems-exe/bin/${RTEMS_ARCH}-rtems5-gcc -v
 }
 
 function build_rtems_os
