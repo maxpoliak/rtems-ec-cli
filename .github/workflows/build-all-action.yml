@@ -26,3 +26,5 @@ jobs:
         run: ./build.sh rtems
       - name: build application
         run: ./build.sh
+      - name: creating a new bootable image
+        run: dd if=/dev/zero of=boot-disk.img bs=512 count=32130 && sudo ./create-boot-image.sh --file boot-disk.img
