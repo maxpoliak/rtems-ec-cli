@@ -16,7 +16,7 @@ FLAG_BUILD_CROSS=0
 function get_version_lable_rtems_os
 {
    base=$(git -C ${RTEMS_DIR}/rtems describe --tags --dirty)
-   branch=$(git -C ${RTEMS_DIR}/rtems branch --show-current)
+   branch=$(git -C ${RTEMS_DIR}/rtems branch | grep \* | cut -d ' ' -f2-)
    echo ${RTEMS_ARCH}"-"${RTEMS_BSP}"-"$branch"-"$base
 }
 
@@ -24,7 +24,7 @@ function get_version_lable_proj
 {
    version_rtems=$(git -C ${RTEMS_DIR}/rtems describe --always --abbrev=6)
    version_base=$(git -C ${ROOT_DIR} describe --tags --dirty --abbrev=4)
-   branch=$(git -C ${ROOT_DIR} branch --show-current)
+   branch=$(git -C ${ROOT_DIR} branch | grep \* | cut -d ' ' -f2-)
    echo ${RTEMS_ARCH}"-"${RTEMS_BSP}"-"$version_rtems"-"$branch"-"$version_base
 }
 
