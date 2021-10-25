@@ -1,4 +1,4 @@
-name: CI Build all components
+name: CI i386 Build all
 
 on:
   push:
@@ -12,7 +12,8 @@ env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
 jobs:
-  build-all-components:
+  build-test-all-components:
+    name: 'CI i386 Build all'
     runs-on: ubuntu-latest
     env:
       VERSION: unknown
