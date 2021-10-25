@@ -29,12 +29,12 @@ jobs:
       - name: 'Step 8: Upload artifact with the result exe image'
         uses: actions/upload-artifact@v2
         with:
-          name: 'Result exe image'
+          name: 'rtems-ec-cli.exe'
           path: rtems-ec-cli.exe
       - name: 'Step 9: Creating a new bootable image'
         run: dd if=/dev/zero of=boot-disk.img bs=512 count=32130 && sudo ./create-boot-image.sh --file boot-disk.img
       - name: 'Step 10: Upload artifact with the QEMU bootable image'
         uses: actions/upload-artifact@v2
         with:
-          name: 'QEMU bootable image'
-          path: ./boot-disk.img
+          name: 'boot-disk.img'
+          path: boot-disk.img
