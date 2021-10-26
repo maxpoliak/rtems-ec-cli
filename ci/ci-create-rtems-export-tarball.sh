@@ -8,18 +8,12 @@ ROOT_DIR="${CI_DIR}/.."
 RTEMS_DIR="${ROOT_DIR}/rtems_rtos"
 EXPORT_DIR="${ROOT_DIR}/rtems_export"
 
-function get_version_lable_rtems_os
-{
-   base=$(git -C ${RTEMS_DIR}/rtems describe --tags --dirty)
-   branch=$(git -C ${RTEMS_DIR}/rtems branch | grep \* | cut -d ' ' -f2-)
-   echo ${RTEMS_ARCH}"-"${RTEMS_BSP}"-"$branch"-"$base
-}
-
 mkdir -p ${EXPORT_DIR}
+rtems_os_version_lable=$(bash ${CI_DIR}/ci-generate-version.sh rtems --arch ${RTEMS_ARCH} --bsp ${RTEMS_BSP})
 echo "Export cross-tools and RTEMS object files to "
-echo "${EXPORT_DIR}/rtems-export-$(get_version_lable_rtems_os).tar.gz"
-ls ${RTEMS_DIR}/build-$(get_version_lable_rtems_os)
+echo "${EXPORT_DIR}/rtems-export-${rtems_os_version_lable}.tar.gz"
+ls ${RTEMS_DIR}/build-${rtems_os_version_lable}
 tar -C ${RTEMS_DIR} -zcvf \
-    ${ROOT_DIR}/rtems_export/rtems-export-$(get_version_lable_rtems_os).tar.gz \
-    ./build-$(get_version_lable_rtems_os) \
+    ${ROOT_DIR}/rtems_export/rtems-export-${rtems_os_version_lable}.tar.gz \
+    ./build-${rtems_os_version_lable} \
     ./rtems-exe
