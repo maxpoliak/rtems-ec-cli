@@ -1,7 +1,8 @@
 #!/bin/bash -eu
 
 IMAGE_NAME=
-ROOT_DIR="$(dirname $(realpath ${BASH_SOURCE[0]}))"
+CI_DIR="$(dirname $(realpath ${BASH_SOURCE[0]}))"
+ROOT_DIR="${CI_DIR}/.."
 OUT_EXE_NAME="rtems-ec-cli.exe"
 MOUNT_DIR_NAME="rtems-boot-disk-image"
 

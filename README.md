@@ -85,7 +85,7 @@ grub on it and copy the exe file. You can do all this with create-boot-image.sh:
 dd if=/dev/zero of=boot-disk.img bs=512 count=32130
 ```
 ```
-sudo ./create-boot-image.sh --file boot-disk.img
+sudo ./ci/ci-create-boot-image.sh --file boot-disk.img
 ```
 After that you can test the result in QEMU:
 ```
