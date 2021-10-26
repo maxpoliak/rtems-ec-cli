@@ -10,13 +10,12 @@ on:
 
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+  VERSION: unknown
 
 jobs:
   build-test-all-components:
     name: 'CI: i386: Build all Test'
-    runs-on: ubuntu-latest
-    env:
-      VERSION: unknown
+    runs-on: ubuntu-latest    
     steps:
       - name: 'Step 1: Install all packages'
         run: |
