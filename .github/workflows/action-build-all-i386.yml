@@ -17,17 +17,19 @@ jobs:
     name: 'CI: i386: Build all'
     runs-on: ubuntu-latest    
     steps:
-      - name: 'Step 1: Install all packages'
+      - name: 'Step 1: Clone the project repo'
+        uses: actions/checkout@v2.3.5
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: 'Step 2: Install all packages'
         run: |
           sudo apt-get update
           sudo apt-get install -yy build-essential gcc g++ gdb git unzip pax bison flex texinfo unzip
           sudo apt-get install -yy python3-dev libncurses5-dev zlib1g-dev python-dev curl locales
-          sudo apt-get install -yy qemu-system-i386
           sudo apt-get clean all
-      - name: 'Step 2: Generating locales'
+      - name: 'Step 3: Generating locales'
         run: sudo localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
-      - name: 'Step 3: Clone the project repository'
-        run: git clone https://github.com/maxpoliak/rtems-ec-cli.git .
       - name: 'Step 4: Make preparations'
         run: ./preparations.sh
       - name: 'Step 5: Build cross-tools'
@@ -38,6 +40,7 @@ jobs:
         run: |
           ./build.sh
           version=$(basename *.tar.gz .tar.gz)
+          echo $version
           echo "::set-env name=VERSION::$version"
       - name: 'Step 8: Upload artifact with the result exe image'
         uses: actions/upload-artifact@v2
@@ -49,15 +52,22 @@ jobs:
     name: 'CI: i386: Create the QEMU bootable image'
     runs-on: ubuntu-latest
     steps:
-      - name: 'Step 1: Dowmload artifact with the exe image'
+      - name: 'Step 1: Repo'
+        uses: actions/checkout@v2.3.5
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: 'Step 2: Make preparations'
+        run: ./preparations.sh
+      - name: 'Step 3: Dowmload artifact with the exe image'
         uses: actions/download-artifact@v2
         with:
           name: '${{ env.VERSION }}-exe-artifact'
-      - name: 'Step 2: Creating a new bootable image'
+      - name: 'Step 4: Creating a new bootable image'
         run: |
           dd if=/dev/zero of=boot-disk.img bs=512 count=32130
           sudo ./ci/ci-create-boot-image.sh --file boot-disk.img
-      - name: 'Step 3: Upload artifact with the QEMU bootable image'
+      - name: 'Step 5: Upload artifact with the QEMU bootable image'
         uses: actions/upload-artifact@v2
         with:
           name: '${{ env.VERSION }}-boot-disk-img-artifact'
@@ -67,15 +77,22 @@ jobs:
     name: 'CI: i386: Create the QEMU bootable disk image'
     runs-on: ubuntu-latest
     steps:
-      - name: 'Step 1: Install QEMU'
+      - name: 'Step 1: checkout Repo'
+        uses: actions/checkout@v2.3.5
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: 'Step 2: Make preparations'
+        run: ./preparations.sh
+      - name: 'Step 3: Install QEMU'
         run: |
           sudo apt-get update          
           sudo apt-get install -yy qemu-system-i386
-      - name: 'Step 2:Dowmload artifact with the QEMU disk image'
+      - name: 'Step 4: Dowmload artifact with the QEMU disk image'
         uses: actions/download-artifact@v2
         with:
           name: '${{ env.VERSION }}-boot-disk-img-artifact'
-      - name: 'Step 3: Test the image on QEMU'
+      - name: 'Step 5: Test the image on QEMU'
         timeout-minutes: 10
         run: |          
           qemu-system-i386 -m 128 -hda boot-disk.img -M q35 -nographic
