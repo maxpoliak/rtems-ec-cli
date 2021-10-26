@@ -32,17 +32,21 @@ jobs:
         run: sudo localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
       - name: 'Step 4: Make preparations'
         run: ./preparations.sh
-      - name: 'Step 5: Build cross-tools'
+      - name: 'Step 5: Generate the project version'
+        run: |
+          pversion=$(bash ./ci/ci-generate-version.sh --branch ${{ github.head_ref }})
+          echo ${pversion}
+      - name: 'Step 6: Build cross-tools'
         run: ./build.sh cross
-      - name: 'Step 6: Build RTEMS'
+      - name: 'Step 7: Build RTEMS'
         run: ./build.sh rtems
-      - name: 'Step 7: Build application'
+      - name: 'Step 8: Build application'
         run: |
           ./build.sh
           version=$(basename *.tar.gz .tar.gz)
           echo $version
           echo "::set-env name=VERSION::$version"
-      - name: 'Step 8: Upload artifact with the result exe image'
+      - name: 'Step 9: Upload artifact with the result exe image'
         uses: actions/upload-artifact@v2
         with:
           name: '${{ env.VERSION }}-exe-artifact'
