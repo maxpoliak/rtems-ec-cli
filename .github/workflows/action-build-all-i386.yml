@@ -1,4 +1,4 @@
-name: 'CI: i386: Build all Test'
+name: 'CI: i386: Build all. Test'
 
 on:
   push:
@@ -13,8 +13,8 @@ env:
   VERSION: unknown
 
 jobs:
-  build-test-all-components:
-    name: 'CI: i386: Build all Test'
+  build-all-components:
+    name: 'CI: i386: Build all'
     runs-on: ubuntu-latest    
     steps:
       - name: 'Step 1: Install all packages'
@@ -44,16 +44,38 @@ jobs:
         with:
           name: '${{ env.VERSION }}-exe-artifact'
           path: ./*.exe
-      - name: 'Step 9: Creating a new bootable image'
+  creating-qemu-image:
+    needs: build-all-components
+    name: 'CI: i386: Create the QEMU bootable image'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Step 1: Dowmload artifact with the exe image'
+        uses: actions/download-artifact@v2
+        with:
+          name: '${{ env.VERSION }}-exe-artifact'
+      - name: 'Step 2: Creating a new bootable image'
         run: |
           dd if=/dev/zero of=boot-disk.img bs=512 count=32130
-          sudo ./create-boot-image.sh --file boot-disk.img
-      - name: 'Step 10: Upload artifact with the QEMU bootable image'
+          sudo ./ci/ci-create-boot-image.sh --file boot-disk.img
+      - name: 'Step 3: Upload artifact with the QEMU bootable image'
         uses: actions/upload-artifact@v2
         with:
           name: '${{ env.VERSION }}-boot-disk-img-artifact'
           path: boot-disk.img
-      - name: 'Step 11: Test the image on QEMU'
+  test-on-qemu:
+    needs: creating-qemu-image
+    name: 'CI: i386: Create the QEMU bootable disk image'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Step 1: Install QEMU'
+        run: |
+          sudo apt-get update          
+          sudo apt-get install -yy qemu-system-i386
+      - name: 'Step 2:Dowmload artifact with the QEMU disk image'
+        uses: actions/download-artifact@v2
+        with:
+          name: '${{ env.VERSION }}-boot-disk-img-artifact'
+      - name: 'Step 3: Test the image on QEMU'
         timeout-minutes: 10
         run: |          
           qemu-system-i386 -m 128 -hda boot-disk.img -M q35 -nographic
