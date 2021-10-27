@@ -108,7 +108,11 @@ echo "9. Copy the RTEMS applacation to the image"
 cp ${ROOT_DIR}/${OUT_EXE_NAME} /mnt/${MOUNT_DIR_NAME}
 
 echo "10. Unmount /mnt/${MOUNT_DIR_NAME} and release $loopdev1 $loopdev0"
+sleep 0.5
 umount /mnt/${MOUNT_DIR_NAME}
+sleep 0.5
 losetup -d $loopdev1
+sleep 0.5
 kpartx -dv $loopdev0
+sleep 0.5
 losetup -d $loopdev0
