@@ -35,23 +35,27 @@ jobs:
       - name: 'Step 4: Make preparations'
         run: |
           ./preparations.sh
+          osversion=$(bash ./ci/ci-generate-version.sh rtems --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }})
+          echo ${osversion}
+          echo "::set-env name=VERSION::$osversion"
+      - name: 'Step 5: Build cross-tools ${{ env.RTEMS_ARCH }}/${{ env.RTEMS_BSP }}'
+        run: ./build.sh cross
+      - name: 'Step 6: Build RTEMS ${{ env.VERSION }}'
+        run: |
+          ./build.sh rtems
           pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }} --branch ${{ github.head_ref }})
           echo ${pversion}
           echo "::set-env name=VERSION::$pversion"
-      - name: 'Step 5: Build cross-tools'
-        run: ./build.sh cross
-      - name: 'Step 6: Build RTEMS'
-        run: ./build.sh rtems
-      - name: 'Step 7: Build application'
+      - name: 'Step 7: Build application. Version : ${{ env.VERSION }}'
         run: ./build.sh
-      - name: 'Step 8: Upload artifact with the result exe image'
+      - name: 'Step 8: Upload artifact: ${{ env.VERSION }}-exe-artifact'
         uses: actions/upload-artifact@v2
         with:
           name: '${{ env.VERSION }}-exe-artifact'
           path: ./*.exe
   creating-qemu-image:
     needs: build-all-components
-    name: 'CI [i386] Create the QEMU bootable image'
+    name: 'CI [i386] Create the QEMU bootable disk image with RTEMS'
     runs-on: ubuntu-latest
     steps:
       - name: 'Step 1: Repo'
@@ -65,7 +69,7 @@ jobs:
           pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }} --branch ${{ github.head_ref }})
           echo ${pversion}
           echo "::set-env name=VERSION::$pversion"
-      - name: 'Step 3: Dowmload artifact with the exe image'
+      - name: 'Step 3: Download artifact: ${{ env.VERSION }}-exe-artifact'
         uses: actions/download-artifact@v2
         with:
           name: '${{ env.VERSION }}-exe-artifact'
@@ -73,7 +77,7 @@ jobs:
         run: |
           dd if=/dev/zero of=boot-disk.img bs=512 count=32130
           sudo ./ci/ci-create-boot-image.sh --file boot-disk.img
-      - name: 'Step 5: Upload artifact with the QEMU bootable image'
+      - name: 'Step 5: Upload artifact: ${{ env.VERSION }}-boot-disk-img-artifact'
         uses: actions/upload-artifact@v2
         with:
           name: '${{ env.VERSION }}-boot-disk-img-artifact'
@@ -99,7 +103,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -yy qemu-system-i386
-      - name: 'Step 4: Dowmload artifact with exe image'
+      - name: 'Step 4: Download artifact: ${{ env.VERSION }}-exe-artifact'
         uses: actions/download-artifact@v2
         with:
           name: '${{ env.VERSION }}-exe-artifact'
@@ -126,7 +130,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -yy qemu-system-i386
-      - name: 'Step 4: Dowmload artifact with QEMU disk image'
+      - name: 'Step 4: Download artifact: ${{ env.VERSION }}-boot-disk-img-artifact'
         uses: actions/download-artifact@v2
         with:
           name: '${{ env.VERSION }}-boot-disk-img-artifact'
@@ -157,8 +161,45 @@ jobs:
           ./util/scripts/config --enable CONFIG_BOARD_EMULATION_QEMU_X86_Q35
           make olddefconfig
           make
-      - name: 'Step 5: Upload artifact with the coreboot image'
+      - name: 'Step 5: Upload artifact: ${{ env.VERSION }}-x86-p35-coreboot-artifact'
         uses: actions/upload-artifact@v2
         with:
           name: '${{ env.VERSION }}-x86-p35-coreboot-artifact'
           path: build/coreboot.rom
+  test-image-with-coreboot-on-qemu:
+    needs: [build-coreboot, creating-qemu-image]
+    name: 'CI [i386] Run coreboot with RTEMS disk image on QEMU'
+    runs-on: ubuntu-latest
+    continue-on-error: false
+    steps:
+      - name: 'Step 1: Checkout Repo'
+        uses: actions/checkout@v2.3.5
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: 'Step 2: Make preparations'
+        run: |
+          ./preparations.sh
+          pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }} --branch ${{ github.head_ref }})
+          echo ${pversion}
+          echo "::set-env name=VERSION::$pversion"
+      - name: 'Step 3: Install QEMU'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -yy qemu-system-i386
+      - name: 'Step 4: Download artifact: ${{ env.VERSION }}-boot-disk-img-artifact'
+        uses: actions/download-artifact@v2
+        with:
+          name: '${{ env.VERSION }}-boot-disk-img-artifact'
+      - name: 'Step 5: Get coreboot version'
+        run: |
+          git clone https://review.coreboot.org/coreboot coreboot
+          cversion=$(git -C coreboot describe --tag)
+          echo ${cversion}
+          echo "::set-env name=VERSION::$cversion"
+      - name: 'Step 6: Download ${{ env.VERSION }}-x86-p35-coreboot-artifact'
+        uses: actions/download-artifact@v2
+        with:
+          name: '${{ env.VERSION }}-x86-p35-coreboot-artifact'
+      - name: 'Step 5: Test disk image with coreboot-${{ env.VERSION }} on QEMU'
+        run: timeout 10 ./ci/ci-test-image-with-coreboot-on-qemu.sh || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
