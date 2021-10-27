@@ -132,3 +132,33 @@ jobs:
           name: '${{ env.VERSION }}-boot-disk-img-artifact'
       - name: 'Step 5: Test disk image on QEMU'
         run: timeout 10 ./ci/ci-test-image-on-qemu.sh || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
+  build-coreboot:
+    name: 'CI [i386] Build coreboot'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Step 1: Install packages for building'
+        run: |
+          sudo apt-get update
+          sudo apt-get install git build-essential gnat flex bison libncurses5-dev wget zlib1g-dev
+      - name: 'Step 2: Clone repo'
+        run: |
+          git clone https://review.coreboot.org/coreboot .
+          git submodule update --init --checkout
+          cversion=$(git describe --tag)
+          echo ${cversion}
+          echo "::set-env name=VERSION::$cversion"
+      - name: 'Step 3: Build crossgcc ${{ env.VERSION }}'
+        run: make crossgcc-i386 CPUS=${{ steps.cpu-cores.outputs.count }}
+      - name: 'Step 4: Build coreboot ${{ env.VERSION }}'
+        run: |
+          make distclean
+          touch .config
+          ./util/scripts/config --enable CONFIG_VENDOR_EMULATION
+          ./util/scripts/config --enable CONFIG_BOARD_EMULATION_QEMU_X86_Q35
+          make olddefconfig
+          make
+      - name: 'Step 5: Upload artifact with the coreboot image'
+        uses: actions/upload-artifact@v2
+        with:
+          name: '${{ env.VERSION }}-x86-p35-coreboot-artifact'
+          path: build/coreboot.rom
