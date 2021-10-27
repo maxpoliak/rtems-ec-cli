@@ -1,4 +1,4 @@
-name: 'CI: i386: Build all. Test'
+name: 'CI [i386] Full testing cycle'
 
 on:
   push:
@@ -16,7 +16,7 @@ env:
 
 jobs:
   build-all-components:
-    name: 'CI: i386: Build all'
+    name: 'CI [i386] Build all'
     runs-on: ubuntu-latest    
     steps:
       - name: 'Step 1: Clone the project repo'
@@ -51,7 +51,7 @@ jobs:
           path: ./*.exe
   creating-qemu-image:
     needs: build-all-components
-    name: 'CI: i386: Create the QEMU bootable image'
+    name: 'CI [i386] Create the QEMU bootable image'
     runs-on: ubuntu-latest
     steps:
       - name: 'Step 1: Repo'
@@ -79,11 +79,12 @@ jobs:
           name: '${{ env.VERSION }}-boot-disk-img-artifact'
           path: boot-disk.img
   test-on-qemu:
-    needs: creating-qemu-image
-    name: 'CI: i386: Create the QEMU bootable disk image'
+    needs: build-all-components
+    name: 'CI [i386] Run exe on QEMU'
     runs-on: ubuntu-latest
+    continue-on-error: false
     steps:
-      - name: 'Step 1: checkout Repo'
+      - name: 'Step 1: Checkout Repo'
         uses: actions/checkout@v2.3.5
         with:
           submodules: true
@@ -98,11 +99,9 @@ jobs:
         run: |
           sudo apt-get update          
           sudo apt-get install -yy qemu-system-i386
-      - name: 'Step 4: Dowmload artifact with the QEMU disk image'
+      - name: 'Step 4: Dowmload artifact with exe image'
         uses: actions/download-artifact@v2
         with:
-          name: '${{ env.VERSION }}-boot-disk-img-artifact'
-      - name: 'Step 5: Test the image on QEMU'
-        timeout-minutes: 10
-        run: |          
-          qemu-system-i386 -m 128 -hda boot-disk.img -M q35 -nographic
+          name: '${{ env.VERSION }}-exe-artifact'
+      - name: 'Step 5: Test exe on QEMU'
+        run: timeout 5 ./ci/ci-test-exe-on-qemu.sh || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
