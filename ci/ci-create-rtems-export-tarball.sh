@@ -11,9 +11,9 @@ EXPORT_DIR="${ROOT_DIR}/rtems_export"
 mkdir -p ${EXPORT_DIR}
 rtems_os_version_lable=$(bash ${CI_DIR}/ci-generate-version.sh rtems --arch ${RTEMS_ARCH} --bsp ${RTEMS_BSP})
 echo "Export cross-tools and RTEMS object files to "
-echo "${EXPORT_DIR}/rtems-export-${rtems_os_version_lable}.tar.gz"
+echo "${EXPORT_DIR}/rtems-export-${rtems_os_version_lable}.tar.xz"
 ls ${RTEMS_DIR}/build-${rtems_os_version_lable}
-tar -C ${RTEMS_DIR} -zcvf \
+tar -C ${RTEMS_DIR} -cvJf \
     ${ROOT_DIR}/rtems_export/rtems-export-${rtems_os_version_lable}.tar.gz \
     ./build-${rtems_os_version_lable} \
     ./rtems-exe
