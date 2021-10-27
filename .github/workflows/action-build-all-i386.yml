@@ -161,11 +161,12 @@ jobs:
           ./util/scripts/config --enable CONFIG_BOARD_EMULATION_QEMU_X86_Q35
           make olddefconfig
           make
+          cp build/coreboot.rom ${{ env.VERSION }}-x86-p35-coreboot.rom
       - name: 'Step 5: Upload artifact: ${{ env.VERSION }}-x86-p35-coreboot-artifact'
         uses: actions/upload-artifact@v2
         with:
-          name: '${{ env.VERSION }}-x86-p35-coreboot-artifact'
-          path: build/coreboot.rom
+          name: 'x86-p35-coreboot-test-artifact'
+          path: ${{ env.VERSION }}-x86-p35-coreboot.rom
   test-image-with-coreboot-on-qemu:
     needs: [build-coreboot, creating-qemu-image]
     name: 'CI [i386] Run coreboot with RTEMS disk image on QEMU'
@@ -191,15 +192,14 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: '${{ env.VERSION }}-boot-disk-img-artifact'
-      - name: 'Step 5: Get coreboot version'
-        run: |
-          git clone https://review.coreboot.org/coreboot coreboot
-          cversion=$(git -C coreboot describe --tag)
-          echo ${cversion}
-          echo "::set-env name=VERSION::$cversion"
-      - name: 'Step 6: Download ${{ env.VERSION }}-x86-p35-coreboot-artifact'
+      - name: 'Step 5: Download x86-p35-coreboot-test-artifact'
         uses: actions/download-artifact@v2
         with:
-          name: '${{ env.VERSION }}-x86-p35-coreboot-artifact'
-      - name: 'Step 5: Test disk image with coreboot-${{ env.VERSION }} on QEMU'
+          name: 'x86-p35-coreboot-test-artifact'
+      - name: 'Step 6: Get coreboot version'
+        run: |
+          cversion=$(basename *.rom -x86-p35-coreboot.rom)
+          echo ${cversion}
+          echo "::set-env name=VERSION::$pversion"
+      - name: 'Step 7: Run on QEMU: coreboot ${{ env.VERSION }}'
         run: timeout 10 ./ci/ci-test-image-with-coreboot-on-qemu.sh || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
