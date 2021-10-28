@@ -39,10 +39,13 @@ jobs:
           echo ${osversion}
           echo "::set-env name=VERSION::$osversion"
       - name: 'Step 5: Build cross-tools ${{ env.RTEMS_ARCH }}/${{ env.RTEMS_BSP }}'
-        run: ./build.sh cross
+        run: |
+          tarball_path=$(bash ci/ci-import-rtems-tarball.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }})
+          [[ "${tarball_path}" == "does-not-exist" ]] && ./build.sh cross || tar -xvf ${tarball_path} -C rtems_rtos
       - name: 'Step 6: Build RTEMS ${{ env.VERSION }}'
         run: |
-          ./build.sh rtems
+          tarball_path=$(bash ci/ci-import-rtems-tarball.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }})
+          [[ "${tarball_path}" == "does-not-exist" ]] && ./build.sh rtems || echo "Image building is not required"
           pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }} --branch ${{ github.head_ref }})
           echo ${pversion}
           echo "::set-env name=VERSION::$pversion"
