@@ -1,4 +1,4 @@
-name: 'CI [i386] Full testing cycle'
+name: 'CI i386: Full testing cycle'
 
 on:
   push:
@@ -16,8 +16,8 @@ env:
 
 jobs:
   build-all-components:
-    name: 'CI [i386] Build all'
-    runs-on: ubuntu-latest    
+    name: 'CI i386: Build all'
+    runs-on: ubuntu-latest
     steps:
       - name: 'Step 1: Clone the project repo'
         uses: actions/checkout@v2.3.5
@@ -55,7 +55,7 @@ jobs:
           path: ./*.exe
   creating-qemu-image:
     needs: build-all-components
-    name: 'CI [i386] Create the QEMU bootable disk image with RTEMS'
+    name: 'CI i386: Create the QEMU bootable disk image with RTEMS'
     runs-on: ubuntu-latest
     steps:
       - name: 'Step 1: Repo'
@@ -84,7 +84,7 @@ jobs:
           path: boot-disk.img
   test-exe-on-qemu:
     needs: build-all-components
-    name: 'CI [i386] Run exe on QEMU'
+    name: 'CI i386: Run exe on QEMU'
     runs-on: ubuntu-latest
     continue-on-error: false
     steps:
@@ -111,7 +111,7 @@ jobs:
         run: timeout 5 ./ci/ci-test-exe-on-qemu.sh || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
   test-image-on-qemu:
     needs: creating-qemu-image
-    name: 'CI [i386] Check virtual disk image'
+    name: 'CI i386: Check virtual disk image'
     runs-on: ubuntu-latest
     continue-on-error: false
     steps:
@@ -137,7 +137,7 @@ jobs:
       - name: 'Step 5: Test disk image on QEMU'
         run: timeout 10 ./ci/ci-test-image-on-qemu.sh || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
   build-coreboot:
-    name: 'CI [i386] Build coreboot'
+    name: 'CI i386: Build coreboot'
     runs-on: ubuntu-latest
     steps:
       - name: 'Step 1: Install packages for building'
@@ -169,7 +169,7 @@ jobs:
           path: ${{ env.VERSION }}-x86-p35-coreboot.rom
   test-image-with-coreboot-on-qemu:
     needs: [build-coreboot, creating-qemu-image]
-    name: 'CI [i386] Run coreboot with RTEMS disk image on QEMU'
+    name: 'CI i386: Run coreboot with RTEMS disk image on QEMU'
     runs-on: ubuntu-latest
     continue-on-error: false
     steps:
