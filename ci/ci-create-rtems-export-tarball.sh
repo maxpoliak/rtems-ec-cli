@@ -14,6 +14,6 @@ echo "Export cross-tools and RTEMS object files to "
 echo "${EXPORT_DIR}/rtems-export-${rtems_os_version_lable}.tar.xz"
 ls ${RTEMS_DIR}/build-${rtems_os_version_lable}
 tar -C ${RTEMS_DIR} -cvJf \
-    ${ROOT_DIR}/rtems_export/rtems-export-${rtems_os_version_lable}.tar.gz \
+    ${ROOT_DIR}/rtems_export/rtems-export-${rtems_os_version_lable}.tar.xz \
     ./build-${rtems_os_version_lable} \
     ./rtems-exe
