@@ -14,7 +14,7 @@ function print_help() {
     echo "  <architecture>-<bsp>-<rtems git tag>-<current branch>-<git tag>"
     echo " "
     echo "  rtems                    Generate RTEMS version lable"
-    echo "                           <architecture>-<bsp>-<current branch>-<rtems git tag>"
+    echo "                           <architecture>-<bsp>-<builder git tag>-<current branch>-<rtems git tag>"
     echo "  --arch   <architecture>  Set CPU architecture (${RTEMS_ARCH} by default)"
     echo "  --bsp    <bsp>           Set board support package (${RTEMS_BSP} by default)"
     echo "  --branch <git-branch>    Set current git branch name for workflow action"
@@ -24,7 +24,8 @@ function print_help() {
 function get_version_lable_rtems_os() {
     base=$(git -C ${RTEMS_DIR}/rtems describe --tags --dirty)
     branch=$(git -C ${RTEMS_DIR}/rtems symbolic-ref -q --short HEAD)
-    echo ${RTEMS_ARCH}"-"${RTEMS_BSP}"-"$1"-"$base
+    builder=$(git -C ${RTEMS_DIR}/rtems-source-builder describe --always --dirty)
+    echo ${RTEMS_ARCH}"-"${RTEMS_BSP}"-"$builder"-"$1"-"$base
 }
 
 function get_version_lable_proj() {
