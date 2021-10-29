@@ -27,7 +27,7 @@ jobs:
       - name: 'Step 2: Install all packages'
         run: |
           sudo apt-get update
-          sudo apt-get install -yy build-essential gcc g++ gdb git unzip pax bison flex texinfo unzip
+          sudo apt-get install -yy build-essential gcc g++ gdb git pax bison flex texinfo unzip
           sudo apt-get install -yy python3-dev libncurses5-dev zlib1g-dev python-dev curl locales wget
           sudo apt-get clean all
       - name: 'Step 3: Generating locales'
@@ -143,29 +143,23 @@ jobs:
     name: 'CI i386: Build coreboot'
     runs-on: ubuntu-latest
     steps:
-      - name: 'Step 1: Install packages for building'
+      - name: 'Step 1: Checkout Repo'
+        uses: actions/checkout@v2.3.5
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: 'Step 2: Install packages for building'
         run: |
           sudo apt-get update
-          sudo apt-get install git build-essential gnat flex bison libncurses5-dev wget zlib1g-dev
-      - name: 'Step 2: Clone repo'
+          sudo apt-get install git build-essential gnat flex bison libncurses5-dev wget zlib1g-dev unzip
+      - name: 'Step 3: Build/Import coreboot image'
         run: |
-          git clone https://review.coreboot.org/coreboot .
-          git submodule update --init --checkout
-          cversion=$(git describe --tag)
+          coreboot_artifact_path=$(bash ./ci/ci-import-coreboot-artifact.sh)
+          [[ "${coreboot_artifact_path}" == "does-not-exist" ]] && ./ci/ci-coreboot-build-image.sh || unzip ${coreboot_artifact_path}
+          cversion=$(basename *.rom -x86-p35-coreboot.rom)
           echo ${cversion}
           echo "::set-env name=VERSION::$cversion"
-      - name: 'Step 3: Build crossgcc ${{ env.VERSION }}'
-        run: make crossgcc-i386 CPUS=${{ steps.cpu-cores.outputs.count }}
-      - name: 'Step 4: Build coreboot ${{ env.VERSION }}'
-        run: |
-          make distclean
-          touch .config
-          ./util/scripts/config --enable CONFIG_VENDOR_EMULATION
-          ./util/scripts/config --enable CONFIG_BOARD_EMULATION_QEMU_X86_Q35
-          make olddefconfig
-          make
-          cp build/coreboot.rom ${{ env.VERSION }}-x86-p35-coreboot.rom
-      - name: 'Step 5: Upload artifact: ${{ env.VERSION }}-x86-p35-coreboot-artifact'
+      - name: 'Step 4: Upload artifact: ${{ env.VERSION }}-x86-p35-coreboot-artifact'
         uses: actions/upload-artifact@v2
         with:
           name: 'x86-p35-coreboot-test-artifact'
