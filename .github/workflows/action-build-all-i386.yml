@@ -153,7 +153,7 @@ jobs:
       - name: 'Step 5: Test disk image on QEMU'
         run: timeout 10 ./ci/ci-test-image-on-qemu.sh || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
   build-coreboot:
-    name: 'CI i386: Build coreboot'
+    name: 'CI i386: Build/Import coreboot'
     runs-on: ubuntu-latest
     steps:
       - name: 'Step 1: Checkout Repo'
