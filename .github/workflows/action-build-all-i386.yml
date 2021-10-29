@@ -47,9 +47,8 @@ jobs:
           tarball_path=$(bash ci/ci-import-rtems-tarball.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }})
           [[ "${tarball_path}" == "does-not-exist" ]] && ./build.sh rtems || echo "Image building is not required"
           current_branch=${{ github.head_ref }}
-          [[ -z $current_branch ]] \
-            && pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }}) \
-            || pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }} --branch $current_branch)
+          [[ -z $current_branch ]] || branch_param="--branch $current_branch"
+          pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }} $branch_param)
           echo ${pversion}
           echo "::set-env name=VERSION::$pversion"
       - name: 'Step 7: Build application. Version : ${{ env.VERSION }}'
@@ -73,9 +72,8 @@ jobs:
         run: |
           ./preparations.sh
           current_branch=${{ github.head_ref }}
-          [[ -z $current_branch ]] \
-            && pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }}) \
-            || pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }} --branch $current_branch)
+          [[ -z $current_branch ]] || branch_param="--branch $current_branch"
+          pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }} $branch_param)
           echo ${pversion}
           echo "::set-env name=VERSION::$pversion"
       - name: 'Step 3: Download artifact: ${{ env.VERSION }}-exe-artifact'
@@ -106,9 +104,8 @@ jobs:
         run: |
           ./preparations.sh
           current_branch=${{ github.head_ref }}
-          [[ -z $current_branch ]] \
-            && pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }}) \
-            || pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }} --branch $current_branch)
+          [[ -z $current_branch ]] || branch_param="--branch $current_branch"
+          pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }} $branch_param)
           echo ${pversion}
           echo "::set-env name=VERSION::$pversion"
       - name: 'Step 3: Install QEMU'
@@ -136,9 +133,8 @@ jobs:
         run: |
           ./preparations.sh
           current_branch=${{ github.head_ref }}
-          [[ -z $current_branch ]] \
-            && pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }}) \
-            || pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }} --branch $current_branch)
+          [[ -z $current_branch ]] || branch_param="--branch $current_branch"
+          pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }} $branch_param)
           echo ${pversion}
           echo "::set-env name=VERSION::$pversion"
       - name: 'Step 3: Install QEMU'
@@ -191,9 +187,8 @@ jobs:
         run: |
           ./preparations.sh
           current_branch=${{ github.head_ref }}
-          [[ -z $current_branch ]] \
-            && pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }}) \
-            || pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }} --branch $current_branch)
+          [[ -z $current_branch ]] || branch_param="--branch $current_branch"
+          pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }} $branch_param)
           echo ${pversion}
           echo "::set-env name=VERSION::$pversion"
       - name: 'Step 3: Install QEMU'
