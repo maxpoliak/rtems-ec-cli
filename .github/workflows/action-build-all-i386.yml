@@ -13,6 +13,7 @@ env:
   VERSION: unknown
   RTEMS_ARCH: i386
   RTEMS_BSP: pc386
+  BUILD_OR_IMPORT: Build
 
 jobs:
   build-all-components:
@@ -38,14 +39,18 @@ jobs:
           osversion=$(bash ./ci/ci-generate-version.sh rtems --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }})
           echo ${osversion}
           echo "::set-env name=VERSION::$osversion"
-      - name: 'Step 5: Build cross-tools ${{ env.RTEMS_ARCH }}/${{ env.RTEMS_BSP }}'
+          tarball_path=$(bash ci/ci-import-rtems-tarball.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }})
+          [[ "${tarball_path}" == "does-not-exist" ]] \
+            || tar -xvf ${tarball_path} -C rtems_rtos; action_type='Import'; echo "::set-env name=BUILD_OR_IMPORT::$action_type"
+      - name: 'Step 5: ${{ env.BUILD_OR_IMPORT }} cross-tools ${{ env.RTEMS_ARCH }}/${{ env.RTEMS_BSP }}'
         run: |
           tarball_path=$(bash ci/ci-import-rtems-tarball.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }})
-          [[ "${tarball_path}" == "does-not-exist" ]] && ./build.sh cross || tar -xvf ${tarball_path} -C rtems_rtos
-      - name: 'Step 6: Build RTEMS ${{ env.VERSION }}'
+          action_type=${{ env.BUILD_OR_IMPORT }}
+          [[ "${action_type}" == "Build" ]] && ./build.sh cross || echo "GCC Cross Compiler files have been imported"
+      - name: 'Step 6: ${{ env.BUILD_OR_IMPORT }} RTEMS ${{ env.VERSION }}'
         run: |
-          tarball_path=$(bash ci/ci-import-rtems-tarball.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }})
-          [[ "${tarball_path}" == "does-not-exist" ]] && ./build.sh rtems || echo "Image building is not required"
+          action_type=${{ env.BUILD_OR_IMPORT }}
+          [[ "${action_type}" == "Build" ]] && ./build.sh rtems || echo "RTEMS object files have been imported"
           current_branch=${{ github.head_ref }}
           [[ -z $current_branch ]] || branch_param="--branch $current_branch"
           pversion=$(bash ./ci/ci-generate-version.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }} $branch_param)
