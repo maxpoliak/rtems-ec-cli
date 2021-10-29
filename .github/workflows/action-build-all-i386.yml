@@ -16,7 +16,7 @@ env:
 
 jobs:
   build-all-components:
-    name: 'CI i386: Build all'
+    name: 'CI i386: Build cross-tools, RTEMS and application'
     runs-on: ubuntu-latest
     steps:
       - name: 'Step 1: Clone the project repo'
