@@ -1,0 +1,18 @@
+name: 'CI Docker: i386: Build all'
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  docker-build-all:
+    name: 'CI Docker: i386: Build all'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build all in Docker
+      run: |
+        ./preparations.sh
+        ./docker.sh ./build.sh all

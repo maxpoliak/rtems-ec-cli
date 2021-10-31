@@ -6,7 +6,7 @@ CNT_IMAGE="rtems-builder"
 
 docker build --tag ${CNT_IMAGE} --build-arg UID=${UID} ${THIS_DIR}
 exec docker run \
-	--interactive --tty --rm --init \
+	--rm --init \
 	--volume ${ROOT_DIR}:/src \
 	--workdir /src \
 	${CNT_IMAGE} \
