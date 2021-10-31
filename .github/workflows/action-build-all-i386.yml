@@ -44,7 +44,6 @@ jobs:
             || tar -xvf ${tarball_path} -C rtems_rtos; action_type='Import'; echo "::set-env name=BUILD_OR_IMPORT::$action_type"
       - name: 'Step 5: ${{ env.BUILD_OR_IMPORT }} cross-tools ${{ env.RTEMS_ARCH }}/${{ env.RTEMS_BSP }}'
         run: |
-          tarball_path=$(bash ci/ci-import-rtems-tarball.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }})
           action_type=${{ env.BUILD_OR_IMPORT }}
           [[ "${action_type}" == "Build" ]] && ./build.sh cross || echo "GCC Cross Compiler files have been imported"
       - name: 'Step 6: ${{ env.BUILD_OR_IMPORT }} RTEMS ${{ env.VERSION }}'
