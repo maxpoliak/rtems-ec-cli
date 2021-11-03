@@ -6,13 +6,31 @@ on:
   pull_request:
     branches: [master]
 
+env:
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+  VERSION: unknown
+  RTEMS_ARCH: i386
+  RTEMS_BSP: pc386
+  BUILD_OR_IMPORT: Build
+
 jobs:
   docker-build-all:
     name: 'CI Docker: i386: Build all'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build all in Docker
+    - name: 'Step 1: Make preparations'
       run: |
         ./preparations.sh
-        ./docker.sh ./build.sh all
+        osversion=$(bash ./ci/ci-generate-version.sh rtems --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }})
+        echo ${osversion}
+        echo "::set-env name=VERSION::$osversion"
+        tarball_path=$(bash ci/ci-import-rtems-tarball.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }})
+        [[ "${tarball_path}" == "does-not-exist" ]] \
+          || tar -xvf ${tarball_path} -C rtems_rtos; action_type='Import'; echo "::set-env name=BUILD_OR_IMPORT::$action_type"
+    - name: 'Step 2: ${{ env.BUILD_OR_IMPORT }} cross-tools ${{ env.RTEMS_ARCH }}/${{ env.RTEMS_BSP }}'
+      run: |
+        tarball_path=$(bash ./ci/ci-build-docker.sh ./ci/ci-import-rtems-tarball.sh --arch ${{ env.RTEMS_ARCH }} --bsp ${{ env.RTEMS_BSP }})
+        action_type=${{ env.BUILD_OR_IMPORT }}
+        [[ "${action_type}" == "Build" ]] && ./docker ./build.sh cross
+
